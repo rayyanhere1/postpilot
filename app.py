@@ -28,18 +28,6 @@ st.markdown("""<style>
 .main-header {text-align: center; color: #0077B5; font-size: 3rem; font-weight: bold;}
 .sub-header {text-align: center; color: #666; font-size: 1.2rem; margin-bottom: 2rem;}
 .post-container {background-color: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 5px solid #0077B5;}
-.stSpinner > div > div {margin: 0px !important; padding: 0px !important;}
-.element-container {margin: 0px !important; padding: 0px !important;}
-div[data-testid="stVerticalBlock"] > div {gap: 0rem !important; margin: 0px !important;}
-div[data-testid="stVerticalBlock"] {gap: 0rem !important; margin: 0px !important;}
-.stMarkdown {margin: 0px !important; padding: 0px !important;}
-.stAlert {margin: 5px 0px !important;}
-.stSuccess {margin: 5px 0px !important;}
-.stTextArea > div > div {margin: 0px !important;}
-.stButton > button {margin: 5px 0px !important;}
-section[data-testid="stSidebar"] {display: none !important;}
-.stApp > header {display: none !important;}
-footer {display: none !important;}
 </style>""", unsafe_allow_html=True)
 
 st.markdown('<h1 class="main-header">🚀 LinkedIn Post Generator</h1>', unsafe_allow_html=True)
