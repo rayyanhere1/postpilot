@@ -44,10 +44,6 @@ if not api_key:
 if 'agent' not in st.session_state:
     st.session_state.agent = LinkedInPostAgent(api_key)
 
-if st.button("🔄 Refresh API Key", key="refresh_api_key"):
-    st.session_state.agent = LinkedInPostAgent(api_key)
-    st.success("✅ API Key refreshed!")
-
 st.markdown("### 🎯 Post Configuration")
 
 col1, col2 = st.columns(2)
