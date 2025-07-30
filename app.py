@@ -9,7 +9,7 @@ load_dotenv()
 class LinkedInPostAgent:
     def __init__(self, api_key):
         genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
         
     def generate_post(self, topic, tone, post_type, length):
         lengths = {"Short": "50-100 words", "Medium": "100-200 words", "Long": "200-300 words"}
@@ -28,6 +28,9 @@ st.markdown("""<style>
 .main-header {text-align: center; color: #0077B5; font-size: 3rem; font-weight: bold;}
 .sub-header {text-align: center; color: #666; font-size: 1.2rem; margin-bottom: 2rem;}
 .post-container {background-color: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 5px solid #0077B5;}
+.stSpinner > div > div {margin-top: 0px !important;}
+.element-container {margin: 0px !important;}
+div[data-testid="stVerticalBlock"] > div {gap: 0rem !important;}
 </style>""", unsafe_allow_html=True)
 
 st.markdown('<h1 class="main-header">🚀 LinkedIn Post Generator</h1>', unsafe_allow_html=True)
@@ -41,6 +44,10 @@ if not api_key:
 if 'agent' not in st.session_state:
     st.session_state.agent = LinkedInPostAgent(api_key)
 
+if st.button("🔄 Refresh API Key", key="refresh_api_key"):
+    st.session_state.agent = LinkedInPostAgent(api_key)
+    st.success("✅ API Key refreshed!")
+
 st.markdown("### 🎯 Post Configuration")
 
 col1, col2 = st.columns(2)
@@ -51,14 +58,22 @@ with col2:
     post_type = st.selectbox("Type", ["Story", "Tips", "Question", "Achievement"])
     length = st.selectbox("Post Length", ["Short", "Medium", "Long"])
 
-if st.button("🔗 Generate Your LinkedIn Post", type="primary", use_container_width=True):
+if st.button("🔗 Generate Your LinkedIn Post", type="primary", use_container_width=True, key="generate_post"):
     if not topic.strip():
         st.warning("⚠️ Please enter a topic!")
     else:
         with st.spinner("⚡ Generating your viral LinkedIn post..."):
-            post = st.session_state.agent.generate_post(topic, tone, post_type, length)
-            st.session_state.generated_post = post
-            st.session_state.post_config = {'topic': topic, 'tone': tone, 'type': post_type, 'length': length}
+            try:
+                post = st.session_state.agent.generate_post(topic, tone, post_type, length)
+                if "Error:" in post:
+                    st.error(f"❌ {post}")
+                    st.info("💡 **Solutions:**\n- Wait 24 hours for quota reset\n- Create new Google account & API key\n- Upgrade to paid plan")
+                else:
+                    st.session_state.generated_post = post
+                    st.session_state.post_config = {'topic': topic, 'tone': tone, 'type': post_type, 'length': length}
+            except Exception as e:
+                st.error(f"❌ API Error: {str(e)}")
+                st.info("💡 Try refreshing the page or check your API key")
 
 if 'generated_post' in st.session_state:
     st.success("🎉 Your LinkedIn Post is Ready!")
@@ -68,10 +83,10 @@ if 'generated_post' in st.session_state:
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("📋 Copy to Clipboard", type="secondary", use_container_width=True):
+        if st.button("📋 Copy to Clipboard", type="secondary", use_container_width=True, key="copy_clipboard"):
             st.code(st.session_state.generated_post, language=None)
     with col2:
-        if st.button("🔄 Generate Another Version", type="secondary", use_container_width=True):
+        if st.button("🔄 Generate Another Version", type="secondary", use_container_width=True, key="regenerate_post"):
             with st.spinner("⚡ Creating another version..."):
                 config = st.session_state.post_config
                 new_post = st.session_state.agent.generate_post(config['topic'], config['tone'], config['type'], config['length'])
