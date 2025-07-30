@@ -28,9 +28,18 @@ st.markdown("""<style>
 .main-header {text-align: center; color: #0077B5; font-size: 3rem; font-weight: bold;}
 .sub-header {text-align: center; color: #666; font-size: 1.2rem; margin-bottom: 2rem;}
 .post-container {background-color: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 5px solid #0077B5;}
-.stSpinner > div > div {margin-top: 0px !important;}
-.element-container {margin: 0px !important;}
-div[data-testid="stVerticalBlock"] > div {gap: 0rem !important;}
+.stSpinner > div > div {margin: 0px !important; padding: 0px !important;}
+.element-container {margin: 0px !important; padding: 0px !important;}
+div[data-testid="stVerticalBlock"] > div {gap: 0rem !important; margin: 0px !important;}
+div[data-testid="stVerticalBlock"] {gap: 0rem !important; margin: 0px !important;}
+.stMarkdown {margin: 0px !important; padding: 0px !important;}
+.stAlert {margin: 5px 0px !important;}
+.stSuccess {margin: 5px 0px !important;}
+.stTextArea > div > div {margin: 0px !important;}
+.stButton > button {margin: 5px 0px !important;}
+section[data-testid="stSidebar"] {display: none !important;}
+.stApp > header {display: none !important;}
+footer {display: none !important;}
 </style>""", unsafe_allow_html=True)
 
 st.markdown('<h1 class="main-header">🚀 LinkedIn Post Generator</h1>', unsafe_allow_html=True)
@@ -43,7 +52,7 @@ if not api_key:
 
 if 'agent' not in st.session_state:
     st.session_state.agent = LinkedInPostAgent(api_key)
-
+    
 st.markdown("### 🎯 Post Configuration")
 
 col1, col2 = st.columns(2)
@@ -72,12 +81,14 @@ if st.button("🔗 Generate Your LinkedIn Post", type="primary", use_container_w
                 st.info("💡 Try refreshing the page or check your API key")
 
 if 'generated_post' in st.session_state:
+    st.markdown('<div style="margin:0px;padding:0px;">', unsafe_allow_html=True)
     st.success("🎉 Your LinkedIn Post is Ready!")
-    st.markdown('<div class="post-container">', unsafe_allow_html=True)
-    st.text_area("Your LinkedIn Post", value=st.session_state.generated_post, height=300)
-    st.markdown('</div>', unsafe_allow_html=True)
-    
+    st.markdown('<div class="post-container" style="margin:0px;">', unsafe_allow_html=True)
+    st.text_area("Your LinkedIn Post", value=st.session_state.generated_post, height=300, key="post_display")
+    st.markdown('</div></div>', unsafe_allow_html=True)
+    st.markdown('<div style="margin:0px;padding:5px 0px;">', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
+    
     with col1:
         if st.button("📋 Copy to Clipboard", type="secondary", use_container_width=True, key="copy_clipboard"):
             st.code(st.session_state.generated_post, language=None)
@@ -88,6 +99,7 @@ if 'generated_post' in st.session_state:
                 new_post = st.session_state.agent.generate_post(config['topic'], config['tone'], config['type'], config['length'])
                 st.session_state.generated_post = new_post
                 st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
     
-    st.divider()
+    st.markdown('<hr style="margin:10px 0px;border:1px solid #ddd;">', unsafe_allow_html=True)
     st.info("💡 **Tips:** Be specific with topics, use trending keywords, ask questions for engagement, post during peak hours (8-10 AM, 12-2 PM)")
