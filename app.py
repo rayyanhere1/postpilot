@@ -79,16 +79,14 @@ if st.button("🔗 Generate Your LinkedIn Post", type="primary", use_container_w
             except Exception as e:
                 st.error(f"❌ API Error: {str(e)}")
                 st.info("💡 Try refreshing the page or check your API key")
-
 if 'generated_post' in st.session_state:
-    st.markdown('<div style="margin:0px;padding:0px;">', unsafe_allow_html=True)
     st.success("🎉 Your LinkedIn Post is Ready!")
-    st.markdown('<div class="post-container" style="margin:0px;">', unsafe_allow_html=True)
-    st.text_area("Your LinkedIn Post", value=st.session_state.generated_post, height=300, key="post_display")
-    st.markdown('</div></div>', unsafe_allow_html=True)
-    st.markdown('<div style="margin:0px;padding:5px 0px;">', unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
     
+    st.markdown('<div class="post-container">', unsafe_allow_html=True)
+    st.text_area("Your LinkedIn Post", value=st.session_state.generated_post, height=300, key="post_display")
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
     with col1:
         if st.button("📋 Copy to Clipboard", type="secondary", use_container_width=True, key="copy_clipboard"):
             st.code(st.session_state.generated_post, language=None)
@@ -99,7 +97,6 @@ if 'generated_post' in st.session_state:
                 new_post = st.session_state.agent.generate_post(config['topic'], config['tone'], config['type'], config['length'])
                 st.session_state.generated_post = new_post
                 st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
     
-    st.markdown('<hr style="margin:10px 0px;border:1px solid #ddd;">', unsafe_allow_html=True)
+    st.divider()
     st.info("💡 **Tips:** Be specific with topics, use trending keywords, ask questions for engagement, post during peak hours (8-10 AM, 12-2 PM)")
